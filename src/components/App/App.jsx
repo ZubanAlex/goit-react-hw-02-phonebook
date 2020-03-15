@@ -49,6 +49,7 @@ export default class App extends Component {
     const { contacts, name, number } = this.state;
     return (
       <>
+        <h2 className={styles.title}>Phonebook</h2>
         <form className={styles.form} onSubmit={this.handleSubmit}>
           <label>
             Name
@@ -75,6 +76,7 @@ export default class App extends Component {
 
           <button type="submit">Add contact</button>
         </form>
+        <h2 className={styles.title}>Contacts</h2>
         <ul className={styles.contsctList}>
           {contacts.map(contact => {
             return (
