@@ -1,0 +1,10 @@
+.form,
+.contsctList {
+  width: 500px;
+  margin: 0 auto 50px;
+}
+
+.input {
+  display: block;
+  margin-bottom: 30px;
+}
