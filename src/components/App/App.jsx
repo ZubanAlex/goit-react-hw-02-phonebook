@@ -1,92 +1,62 @@
 import React, { Component } from "react";
+
 // import T from "prop-types";
-import { v4 as uuidv4 } from "uuid";
+
+import ContactForm from "../ContactForm/ContactForm";
+import ContactList from "../ContactList/ContactList";
+import Filter from "../Filter/Filter";
 
 import styles from "./App.module.css";
 
 export default class App extends Component {
   state = {
-    contacts: [],
-    name: "",
-    number: ""
+    contacts: [
+      { id: "id-1", name: "Rosie Simpson", number: "459-12-56" },
+      { id: "id-2", name: "Hermione Kline", number: "443-89-12" },
+      { id: "id-3", name: "Eden Clements", number: "645-17-79" },
+      { id: "id-4", name: "Annie Copeland", number: "227-91-26" }
+    ],
+    filter: ""
   };
 
-  handleChange = ({ target }) => {
-    const { name, value } = target;
-
-    this.setState({ [name]: value });
+  changeFilter = e => {
+    this.setState({ filter: e.target.value });
   };
 
-  handleSubmit = evt => {
-    evt.preventDefault();
-    const name = evt.target.name.value;
-    const number = evt.target.number.value;
-
-    const createNewContact = {
-      id: uuidv4(),
-      name: name,
-      number: number
-    };
-    if (name === "" && number === "") {
-      return;
-    }
-    this.addContact(createNewContact);
+  filterContacts = (contacts, filter) => {
+    return contacts.filter(contact =>
+      contact.name.toLowerCase().includes(filter.toLowerCase())
+    );
   };
 
   addContact = contact => {
     this.setState(state => ({
       contacts: [...state.contacts, contact]
     }));
-
-    this.resetInput();
   };
 
-  resetInput = () => {
-    this.setState({ name: "", number: "" });
+  deletContact = id => {
+    this.setState(state => ({
+      contacts: state.contacts.filter(contact => contact.id !== id)
+    }));
   };
 
   render() {
-    const { contacts, name, number } = this.state;
-    return (
-      <>
-        <h2 className={styles.title}>Phonebook</h2>
-        <form className={styles.form} onSubmit={this.handleSubmit}>
-          <label>
-            Name
-            <input
-              className={styles.input}
-              type="text"
-              placeholder="Enter name"
-              name="name"
-              value={name}
-              onChange={this.handleChange}
-            />
-          </label>
-          <label>
-            Number
-            <input
-              className={styles.input}
-              type="text"
-              placeholder="Enter number"
-              name="number"
-              value={number}
-              onChange={this.handleChange}
-            />
-          </label>
+    const { contacts, filter } = this.state;
+    const filteredContact = this.filterContacts(contacts, filter);
 
-          <button type="submit">Add contact</button>
-        </form>
+    return (
+      <div className={styles.container}>
+        <h1 className={styles.title}>Phonebook</h1>
+        <ContactForm contacts={contacts} addContact={this.addContact} />
+
         <h2 className={styles.title}>Contacts</h2>
-        <ul className={styles.contsctList}>
-          {contacts.map(contact => {
-            return (
-              <li key={contact.id}>
-                {contact.name}: {contact.number}
-              </li>
-            );
-          })}
-        </ul>
-      </>
+        <Filter value={filter} onChangeFilter={this.changeFilter} />
+        <ContactList
+          contacts={filteredContact}
+          onDeleteContact={this.deletContact}
+        />
+      </div>
     );
   }
 }
